@@ -185,9 +185,15 @@ class Dialog(QDialog):
 	@pyqtSlot()
 	def slot_ports_ready(self):
 		if self.selected_midi_source:
-			self.b_input.select_text(self.selected_midi_source)
+			try:
+				self.b_input.select_text(self.selected_midi_source)
+			except IndexError:
+				self.selected_midi_source = ''
 		if self.selected_audio_sink:
-			self.b_output.select_text(self.selected_audio_sink)
+			try:
+				self.b_output.select_text(self.selected_audio_sink)
+			except IndexError:
+				self.selected_audio_sink = ''
 		self.b_input.setEnabled(True)
 		self.b_output.setEnabled(True)
 
