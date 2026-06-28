@@ -13,7 +13,7 @@ classifiers = [
 dynamic = ["version", "description"]
 dependencies = [
 	"PyQt5",
-	"conn_jack >= 1.2.0",
+	"conn_jack >= 1.2.0, <= 1.3.0",
 	"liquiphy",
 	"soso_qt_extras >= 1.2.0"
 ]
