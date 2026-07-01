@@ -11,6 +11,12 @@ automatically connects the Jack MIDI input and Jack audio outputs to the first
 available (physical) ports, displaying the SFZ name and ports connected in a
 simple dialog.
 
+<img width="422" height="259" alt="liquiphy-gui-window-main" src="https://github.com/user-attachments/assets/94682411-ce96-4c92-a874-65430823d02e" />
+
+Errors that liquidsfsz reported during parsing show up in the "Errors" tab:
+
+<img width="422" height="259" alt="liquiphy-gui-window-errors" src="https://github.com/user-attachments/assets/b19d25c5-7f8e-4d1d-ad85-b15091cb0890" />
+
 Hit the Escape key or ctrl-Q to exit.
 
 ## Install
@@ -31,3 +37,18 @@ Install this package (liquiphy_gui) using python pip:
 
 ## File associations
 
+If you would like to open .sfz files in liquiphy-gui by double-clicking them in
+your file explorer, you can add an association.
+
+1. Right click on an .sfz file to bring up the context menu.
+
+2. Select "Open With", and then "Other Application"
+<img width="799" height="525" alt="nemo-open-with" src="https://github.com/user-attachments/assets/b203be50-ca67-44e1-8511-b50569071541" />
+
+3. In the dialog show, look for "liquiphy-gui" in the list of applications, and
+then click "Set as default".
+<img width="575" height="563" alt="gnome-set-default" src="https://github.com/user-attachments/assets/cd1c7bea-f867-475e-afee-b11451a3fd55" />
+
+
+Now, all it takes to preview an .sfz is double-clicking on it. Jack ports are
+instantly connected, and you have your live preview.
