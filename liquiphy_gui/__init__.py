@@ -34,7 +34,7 @@ from conn_jack import JackConnectionManager, JackConnectError, JACK_PORT_IS_INPU
 from qt_extras.list_button import QtListButton
 from liquiphy import LiquidSFZ
 
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 
 
 class Dialog(QDialog):
