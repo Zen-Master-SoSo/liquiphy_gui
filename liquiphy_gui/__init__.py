@@ -169,11 +169,11 @@ class Dialog(QDialog):
 		for src,tgt in zip(self.audio_out_ports, self.current_audio_sink_ports):
 			self.conn_man.connect(src, tgt)
 
-	def on_client_registration(self, client_name, action):
+	def on_client_registration(self, client_name, _):
 		if client_name.startswith('liquidsfz'):
 			self.liq_name = client_name
 
-	def on_port_registration(self, port, action):
+	def on_port_registration(self, port, _):
 		if port.name.startswith(self.liq_name + ':'):
 			if port.is_input and port.is_midi:
 				self.midi_in_port = port
