@@ -25,11 +25,12 @@ Afterwards, you can click on an SFZ file in your file explorer (nemo, nautilus,
 etc.), and get an instant preview of the selected SFZ.
 """
 import sys, logging, argparse
-from os.path import dirname, basename, abspath
-from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot, QSettings
+from os.path import dirname, basename, abspath, join
+from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot, QSettings, QSize
 from PyQt5.QtCore import QTimer
+from PyQt5.QtGui import QKeySequence, QIcon
 from PyQt5.QtWidgets import	QApplication, QDialog, QLabel, QFrame, QTabWidget, QTextEdit, \
-							QVBoxLayout, QHBoxLayout
+							QPushButton, QVBoxLayout, QHBoxLayout, QAction, QShortcut
 from conn_jack import JackConnectionManager, JackConnectError, JACK_PORT_IS_INPUT
 from qt_extras.list_button import QtListButton
 from liquiphy import LiquidSFZ
@@ -43,10 +44,13 @@ class Dialog(QDialog):
 
 	def __init__(self, sfz_filename):
 		super().__init__()
+		self.sfz_filename = abspath(sfz_filename)
 
 		tabs = QTabWidget(self)
+		tabs.setTabPosition(QTabWidget.South)
 		error_text = QTextEdit(tabs)
 		error_text.setReadOnly(True)
+		error_text.setObjectName('errors')
 
 		try:
 			self.conn_man = JackConnectionManager()
@@ -66,45 +70,80 @@ class Dialog(QDialog):
 			self.liquidsfz = LiquidSFZ(sfz_filename)
 			error_text.insertPlainText(self.liquidsfz.stderr())
 
-			# Show selected SFZ:
+			# Show selected SFZ title:
 			label = QLabel(basename(sfz_filename), self)
-			font = label.font()
-			font.setPointSize(15)
-			label.setFont(font)
-			label.setAlignment(Qt.AlignHCenter| Qt.AlignVCenter)
-			sfz_layout.addWidget(label)
-			label = QLabel(dirname(abspath(sfz_filename)), self)
-			label.setAlignment(Qt.AlignHCenter| Qt.AlignVCenter)
+			label.setObjectName('title')
 			sfz_layout.addWidget(label)
 
+			# Show selected SFZ filename + copy path button:
 			lo = QHBoxLayout()
+			label = QLabel(dirname(self.sfz_filename), self)
+			label.setObjectName('filename')
+			lo.addWidget(label)
+			button = QPushButton(self)
+			button.setObjectName('copy-button')
+			button.setIcon(QIcon.fromTheme('edit-copy'))
+			button.setToolTip('Copy path to clipboard')
+			button.clicked.connect(self.slot_copy_path)
+			lo.addWidget(button)
+			lo.addStretch()
+			sfz_layout.addLayout(lo)
+
+			# Select sink/source controls:
+			sink_source_lo = QHBoxLayout()
 
 			# Setup input select button:
+			lo = QHBoxLayout()
 			label = QLabel('Source:', self)
 			label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
 			lo.addWidget(label)
 			self.b_input = QtListButton(self, self.midi_sources)
+			self.b_input.setToolTip('Select device to accept MIDI events from')
 			self.b_input.sig_item_selected.connect(self.slot_input_selected)
 			self.b_input.setEnabled(False)
 			lo.addWidget(self.b_input)
+			sink_source_lo.addLayout(lo)
+
+			# Space between sink/source:
+			sink_source_lo.addStretch()
 
 			# Setup output select button:
+			lo = QHBoxLayout()
 			label = QLabel('Sink:', self)
 			label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
 			lo.addWidget(label)
 			self.b_output = QtListButton(self, self.audio_targets)
+			self.b_output.setToolTip('Select device to send audio to')
 			self.b_output.sig_item_selected.connect(self.slot_output_client_selected)
 			self.b_output.setEnabled(False)
 			lo.addWidget(self.b_output)
-			sfz_layout.addLayout(lo)
+
+			sink_source_lo.addLayout(lo)
+			sfz_layout.addLayout(sink_source_lo)
 
 			tabs.addTab(sfz_frame, 'Main')
 
 		tabs.addTab(error_text, 'Errors')
 		main_layout = QVBoxLayout()
-		main_layout.setContentsMargins(2,2,2,2)
+		main_layout.setContentsMargins(0,0,0,0)
 		main_layout.addWidget(tabs)
 		self.setLayout(main_layout)
+
+		shortcut = QShortcut(QKeySequence('F5'), self)
+		shortcut.activated.connect(self.slot_set_application_style)
+		self.slot_set_application_style()
+
+	def sizeHint(self):
+		return QSize(400, 140)
+
+	@pyqtSlot()
+	def slot_set_application_style(self):
+		with open(join(dirname(__file__), 'res', 'style.css')) as cssfile:
+			QApplication.instance().setStyleSheet(cssfile.read())
+
+	@pyqtSlot()
+	def slot_copy_path(self):
+		QApplication.instance().clipboard().setText(self.sfz_filename)
 
 	def midi_sources(self):
 		"""
