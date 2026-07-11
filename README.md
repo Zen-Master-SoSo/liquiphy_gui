@@ -11,11 +11,12 @@ automatically connects the Jack MIDI input and Jack audio outputs to the first
 available (physical) ports, displaying the SFZ name and ports connected in a
 simple dialog.
 
-<img width="422" height="259" alt="liquiphy-gui-window-main" src="https://github.com/user-attachments/assets/94682411-ce96-4c92-a874-65430823d02e" />
+<img width="400" height="168" alt="Main tab" src="https://github.com/user-attachments/assets/43290c38-9549-4978-b639-d6886e5d5154" />
 
 Errors that liquidsfsz reported during parsing show up in the "Errors" tab:
 
-<img width="422" height="259" alt="liquiphy-gui-window-errors" src="https://github.com/user-attachments/assets/b19d25c5-7f8e-4d1d-ad85-b15091cb0890" />
+<img width="400" height="168" alt="Errors tab" src="https://github.com/user-attachments/assets/c1c2a6e1-a850-40db-8703-b067078aa77c" />
+
 
 Hit the Escape key or ctrl-Q to exit.
 
